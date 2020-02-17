@@ -14,12 +14,7 @@ const CarSchema = new mongoose.Schema({
    year: String
   });
 
-  CarSchema.index({ "make": 1, "model": 1}, { unique: true });
+CarSchema.index({ "make": 1, "model": 1}, { unique: true });
 
 export const Car = mongoose.model('Car', CarSchema);
 
-export const Service = {
-    getCars: () => Car.find(),
-    addCar: data => new Car(data).save(),
-    deleteCar: carId => Car.findByIdAndRemove(carId)
-}
