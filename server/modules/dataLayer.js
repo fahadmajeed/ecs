@@ -1,43 +1,26 @@
-import { generate } from 'short-uuid';
+import { Car } from './schema';
 
-let _cars = [];
+export const getCars = () => Car.find();
 
-export const getCars = () => _cars;
-
-export const getCar = id => _cars.find(car => car.id === id);
-
-export const findByMakeAndModel = (make, model, year) => _cars.find(car => car.make === make &&
-  car.model === model && car.year === year);
+export const getCar = id => Car.find({_id: id});
 
 export const addCar = ({ colour, make, model, year }) => {
-  const exists = findByMakeAndModel(make, model, year);
+  const car = new Car({ make, model, colour, year });
 
-  if (!exists) {
-    const car = {id: generate(), make, model, colour, year};
-    _cars.push(car);
-
-    return true;
-  } else {
-
-    return false;
-  }
+  return car.save();
 };
 
 export const setCar = updatedCar => {
-    const targetIndex = _cars.findIndex(car => car.id === updatedCar.id)
-    if (targetIndex >= 0) {
-      _cars[targetIndex] = updatedCar;
-      return true;
-    } else {
-      return false;
-    }
+  const query = {'_id': updatedCar._id};
+
+  return new Promise((resolve, reject) => {
+    Car.findOneAndUpdate(query, updatedCar, {upsert: true}, function(err, doc) {
+      if (err) reject(err);
+      resolve(`Car ${updatedCar.make}, ${updatedCar.model} succesfully updated.`);
+    });
+  });
 };
 
 export const removeCar = id => {
-  const exists = getCar(id);
-  if (!exists) {
-    return false;
-  }
-  _cars = _cars.filter(car => car.id === id);
-  return `Car with make ${exists.make} and model ${exists.model} with ID ${exists.id} deleted`;
+  return Car.findByIdAndRemove(id);
 }
