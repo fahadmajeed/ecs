@@ -34,9 +34,45 @@ describe('POST /api/v1/cars', () => {
             if (err) {
               return done(err);
             }
-            expect(res.length).not.to.be.null;
+            expect(res.body.length).to.equal(1);
             return done();
           });
+    });
+
+    it('Fail, car requires model', (done) => {
+      request(app).post('/api/v1/cars')
+      .send({ make: 'BMW', year: '2020' })
+      .then((res) => {
+        const body = res.body;
+        expect(body.error.errors.model.name)
+          .to.equal('ValidatorError')
+        done();
+      })
+      .catch((err) => done(err));
+    });
+
+    it('Fail, car requires make', (done) => {
+      request(app).post('/api/v1/cars')
+      .send({ model: 'class', year: '2020' })
+      .then((res) => {
+        const body = res.body;
+        expect(body.error.errors.make.name)
+          .to.equal('ValidatorError')
+        done();
+      })
+      .catch((err) => done(err));
+    });
+
+    it('Fail, car requires year', (done) => {
+      request(app).post('/api/v1/cars')
+      .send({ make: 'BMW', model: '5 series' })
+      .then((res) => {
+        const body = res.body;
+        expect(body.error.errors.year.name)
+          .to.equal('ValidatorError')
+        done();
+      })
+      .catch((err) => done(err));
     });
 
 });

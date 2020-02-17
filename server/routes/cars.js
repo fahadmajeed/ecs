@@ -5,7 +5,8 @@ import * as CarsData from '../modules/dataLayer';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-
+  
+  
   CarsData.getCars()
   .then(cars => {
     res.status(200).json(
@@ -22,6 +23,15 @@ router.get('/:id', (req, res) => {
     res.status(200).json(
       car
     );
+  });
+ 
+});
+
+router.get('/:make/:model', (req, res) => {
+  const {make, model} = req.params;
+  CarsData.getMakeAndModel(make, model)
+  .then(result => {
+    res.status(200).json(result);
   });
  
 });

@@ -10,11 +10,15 @@ const CarSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Model is required.']
    },
+   year: {
+    type: String,
+    required: [true, 'Year is required.']
+   },
    colour: String,
-   year: String
+   words: String
   });
 
-CarSchema.index({ "make": 1, "model": 1}, { unique: true });
+CarSchema.index({ "make": 1, "model": 1, "year": 1}, { unique: true });
 
 export const Car = mongoose.model('Car', CarSchema);
 
